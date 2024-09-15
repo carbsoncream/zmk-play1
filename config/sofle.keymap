@@ -9,12 +9,16 @@
 
 #define ZMK_MOUSE_DEFAULT_MOVE_VAL 1200  // 600
 #define ZMK_MOUSE_DEFAULT_SCRL_VAL 20    // 10
-#define U_MS_U &mmv MOVE_UP
-#define U_MS_D &mmv MOVE_DOWN
-#define U_MS_L &mmv MOVE_LEFT
-#define U_MS_R &mmv MOVE_RIGHT
 #define ZMK_MOUSE_DEFAULT_MOVE_VAL 1200  //  600
 #define ZMK_MOUSE_DEFAULT_SCRL_VAL 20    // 10
+
+#define WORDS 0
+#define SYMBOLS 1
+#define CURSOR 2
+#define DEVICE 3
+#define MEDIA 4
+#define BROWSE 5
+
 
 / {
     behaviors {
@@ -29,47 +33,109 @@
             time-to-max-speed-ms = <400>;      // 500
             delay-ms = <0>;                   //   10
         };
+        
+        bhm: balanced_homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <150>;    // <---[[moderate duration]]
+            quick-tap-ms = <100>;
+            flavor = "balanced";
+            bindings = <&kp>, <&kp>;
+        };
+        
+        
+        esc_grv: escape_grave {
+            compatible = "zmk,behavior-mod-morph";    // defaul level
+            #binding-cells = <0>;
+            bindings = <&kp ESC>, <&kp GRAVE>;
+            mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
+            keep-mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI)>;
+        };
+        
+        bspc_del: backspace_delete {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp BACKSPACE>, <&kp DELETE>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+            keep-mods = <(MOD_RSFT)>;
+        };
     };
 
-    scroll_encoder: scroll_encoder {
+    rol_scrl: scroll_encoder {
         compatible = "zmk,behavior-sensor-rotate";
-        #sensor-binding-cells = <0>;
-        bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
+        #sensor-binding-cells = <2>;
+        bindings = <&msc>, <&msc>;
 
         tap-ms = <30>;
     };
 
+
+    char_caps: temp_char_caps {
+        compatible = "zmk,behavior-caps-word";
+        #binding-cells = <0>;
+        continue-list = <UNDERSCORE>;
+    };
+
+    td_shf: tap_dance_shift {
+        compatible = "zmk,behavior-tap-dance";
+        #binding-cells = <0>;
+        tapping-term-ms = <150>;
+        bindings = <&kp LSHIFT>, <&char_caps>;
+    };
+    
+
+    td_sff_ent: tap_dance_kp {
+        compatible = "zmk,behavior-tap-dance";
+        #binding-cells = <0>;
+        tapping-term-ms = <150>;
+        bindings = <&kp LSHIFT>, <&lt 2 ENTER>;
+    };
+    
+    
+
     keymap {
         compatible = "zmk,keymap";
 
-        Chars {
+        Default {
             bindings = <
-&kp ESC     &kp N1     &kp N2        &kp N3        &kp N4       &kp N5         &kp UP_ARROW     &kp N6       &kp N7       &kp N8     &kp N9         &kp N0      &kp LEFT_BRACKET
-&lt 3 TAB   &kp Q      &kp W         &kp E         &kp R        &kp T          &kp DOWN_ARROW   &kp Y        &kp U        &kp I      &kp O          &kp P       &kp BACKSPACE
-&lt 4 CAPS  &kp A      &kp S         &kp D         &kp F        &kp G          &kp LEFT_ARROW   &kp H        &kp J        &kp K      &kp L          &kp SEMI    &kp RETURN
-&kp LSHFT   &kp Z      &kp X         &kp C         &kp V        &kp B          &kp RIGHT_ARROW  &kp N        &kp M        &kp COMMA  &kp DOT        &kp FSLH    &kp MINUS
-&kp C_MUTE  &kp LCTRL  &kp LEFT_ALT  &kp LEFT_GUI  &lt 1 SPACE  &lt 2 ENTER    &kp ENTER        &lt 2 ENTER  &lt 1 SPACE  &kp RGUI   &kp RIGHT_ALT  &kp DELETE
+&esc_grv    &kp N1     &kp N2        &kp N3               &kp N4       &kp N5         &kp UP_ARROW     &kp N6       &kp N7       &kp N8     &kp N9         &kp N0      &bspc_del
+&lt 3 TAB   &kp Q      &kp W         &kp E                &kp R        &kp T          &kp DOWN_ARROW   &kp Y        &kp U        &kp I      &kp O          &kp P       &kp LEFT_BRACKET
+&lt 4 CAPS  &kp A      &kp S         &kp D                &kp F        &kp G          &kp LEFT_ARROW   &kp H        &kp J        &kp K      &kp L          &kp SEMI    &kp RETURN
+&td_shf     &kp Z      &kp X         &kp C                &kp V        &kp B          &kp RIGHT_ARROW  &kp N        &kp M        &kp COMMA  &kp DOT        &kp FSLH    &kp MINUS
+&kp C_MUTE  &kp LCTRL  &kp LEFT_ALT  &bhm LEFT_GUI SPACE  &lt 1 SPACE  &td_sff_ent    &kp ENTER        &lt 2 ENTER  &lt 1 SPACE  &kp RGUI   &kp RIGHT_ALT  &kp DELETE
             >;
 
-            sensor-bindings = <&inc_dec_kp DOWN UP_ARROW>;
-            display-name = "Chars";
-            label = "Layer0";
+            sensor-bindings = <&rol_scrl SCRL_UP SCRL_DOWN>;
+            display-name = "Words";
         };
 
         Symbols {
             bindings = <
-&kp GRAVE   &kp F1           &kp F2           &kp F3           &kp F4           &kp F5       &mmv MOVE_UP     &kp F6           &kp F7           &kp F8      &kp F9     &kp F10           &kp RIGHT_BRACKET
-&trans      &rgb_ug RGB_HUI  &rgb_ug RGB_SAI  &rgb_ug RGB_SPI  &rgb_ug RGB_BRI  &mkp LCLK    &mmv MOVE_DOWN   &kp PG_UP        &kp END          &kp UP      &kp HOME   &kp BACKSLASH     &trans
-&trans      &rgb_ug RGB_HUD  &rgb_ug RGB_SAD  &rgb_ug RGB_SPD  &rgb_ug RGB_BRD  &mkp RCLK    &mmv MOVE_LEFT   &kp PG_DN        &kp LEFT         &kp DOWN    &kp RIGHT  &kp SINGLE_QUOTE  &trans
-&trans      &rgb_ug RGB_OFF  &rgb_ug RGB_ON   &rgb_ug RGB_EFR  &rgb_ug RGB_EFF  &trans       &mmv MOVE_RIGHT  &rgb_ug RGB_BRI  &rgb_ug RGB_BRD  &kp INSERT  &kp F11    &kp F12           &kp EQUAL
-&kp C_MUTE  &trans           &trans           &trans           &trans           &trans       &mkp LCLK        &trans           &trans           &trans      &trans     &trans
+&kp GRAVE   &kp F1           &kp F2           &kp F3           &kp F4           &kp F5       &mmv MOVE_UP     &kp F6     &kp F7     &kp F8             &kp F9            &kp F10            &trans
+&trans      &rgb_ug RGB_HUI  &rgb_ug RGB_SAI  &rgb_ug RGB_SPI  &rgb_ug RGB_BRI  &mkp LCLK    &mmv MOVE_DOWN   &kp MINUS  &kp EQUAL  &kp SINGLE_QUOTE   &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH
+&trans      &rgb_ug RGB_HUD  &rgb_ug RGB_SAD  &rgb_ug RGB_SPD  &rgb_ug RGB_BRD  &mkp RCLK    &mmv MOVE_LEFT   &kp UNDER  &kp PLUS   &kp DOUBLE_QUOTES  &kp LEFT_BRACE    &kp RIGHT_BRACE    &none
+&trans      &rgb_ug RGB_OFF  &rgb_ug RGB_ON   &rgb_ug RGB_EFR  &rgb_ug RGB_EFF  &trans       &mmv MOVE_RIGHT  &kp GRAVE  &kp TILDE  &kp INSERT         &kp F11           &kp F12            &kp EQUAL
+&kp C_MUTE  &trans           &trans           &trans           &trans           &trans       &mkp LCLK        &trans     &trans     &trans             &trans            &trans
             >;
 
-            display-name = "Layer1";
-            sensor-bindings = <&scroll_encoder>;
+            sensor-bindings = <&rol_scrl SCRL_UP SCRL_DOWN>;
+            display-name = "Symbols";
         };
 
-        Connect {
+        Cursor {
+            bindings = <
+&kp GRAVE  &kp F1  &kp F2          &kp F3     &kp F4     &kp F5       &mmv MOVE_UP     &kp F6     &kp F7     &kp F8            &kp F9     &kp F10           &kp RIGHT_BRACKET
+&trans     &trans  &kp HOME        &kp UP     &kp END    &kp PG_UP    &mmv MOVE_DOWN   &kp PG_UP  &kp END    &kp UP            &kp HOME   &kp BACKSLASH     &trans
+&trans     &trans  &kp LEFT        &kp DOWN   &kp RIGHT  &kp PG_DN    &mmv MOVE_LEFT   &kp PG_DN  &kp LEFT   &kp DOWN          &kp RIGHT  &kp SINGLE_QUOTE  &trans
+&trans     &trans  &rgb_ug RGB_ON  &mkp RCLK  &mkp LCLK  &trans       &mmv MOVE_RIGHT  &trans     &mkp LCLK  &mkp RCLK kp F11  &kp F12    &trans            &kp C_MUTE
+&trans     &trans  &trans          &trans     &trans     &trans       &trans           &trans     &trans     &trans            &trans
+            >;
+
+            sensor-bindings = <&rol_scrl SCRL_LEFT SCRL_RIGHT>;
+            display-name = "Cursor";
+        };
+
+        Device {
             bindings = <
 &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2       &bt BT_SEL 3      &bt BT_SEL 4    &mmv MOVE_UP     &kp F6           &kp F7          &kp F8      &kp F9     &kp F10      &trans
 &trans      &trans        &trans        &trans             &trans            &trans          &mmv MOVE_DOWN   &kp PAGE_UP      &trans          &kp F11     &kp F12    &kp UNDER    &kp PLUS
@@ -78,21 +144,21 @@
 &trans      &trans        &trans        &trans             &trans            &trans          &mkp LCLK        &trans           &trans          &trans      &trans     &trans
             >;
 
-            sensor-bindings = <&scroll_encoder>;
+            sensor-bindings = <&rol_scrl SCRL_UP SCRL_DOWN>;
+            display-name = "Device";
         };
 
         Media {
-            display-name = "LAYER0";
             bindings = <
-&kp ESC     &kp C_BRI_DEC   &kp C_BRI_UP  &kp LC(UP)    &kp LG(SPACE)  &kp F4          &kp UP_ARROW     &trans         &kp TAB          &kp KP_DIVIDE    &kp KP_MULTIPLY  &kp BACKSPACE  &trans
-&kp TAB     &kp C_PREVIOUS  &kp W         &kp E         &kp R          &kp T           &kp DOWN_ARROW   &kp PAGE_UP    &kp KP_NUMBER_7  &kp KP_NUMBER_8  &kp KP_NUMBER_9  &kp KP_MINUS   &trans
-&kp CAPS    &kp A           &kp S         &kp D         &kp F          &kp G           &kp LEFT_ARROW   &kp PAGE_DOWN  &kp KP_NUMBER_4  &kp KP_NUMBER_5  &kp KP_NUMBER_6  &kp KP_PLUS    &trans
-&kp LSHFT   &kp Z           &kp X         &kp C         &kp V          &kp B           &kp RIGHT_ARROW  &trans         &kp KP_NUMBER_1  &kp KP_NUMBER_2  &kp KP_NUMBER_3  &kp KP_ENTER   &trans
-&kp C_MUTE  &kp LCTRL       &kp LEFT_ALT  &kp LEFT_GUI  &lt 1 SPACE    &lt 2 ESCAPE    &kp ENTER        &kp SPACE      &kp ENTER        &kp KP_NUMBER_0  &kp KP_DOT       &kp KP_DOT
+&kp ESC     &kp C_BRI_DEC   &kp C_BRI_UP  &kp LC(UP)                &kp LG(SPACE)              &kp F4           &kp UP_ARROW     &trans         &kp TAB          &kp KP_DIVIDE    &kp KP_MULTIPLY  &kp BACKSPACE  &trans
+&kp TAB     &kp C_PREVIOUS  &kp W         &kp LS(LG(LEFT_BRACKET))  &kp LS(LG(RIGHT_BRACKET))  &kp PAGE_UP      &kp DOWN_ARROW   &kp PAGE_UP    &kp KP_NUMBER_7  &kp KP_NUMBER_8  &kp KP_NUMBER_9  &kp KP_MINUS   &trans
+&kp CAPS    &kp A           &kp S         &kp D                     &kp F                      &kp PAGE_DOWN    &kp LEFT_ARROW   &kp PAGE_DOWN  &kp KP_NUMBER_4  &kp KP_NUMBER_5  &kp KP_NUMBER_6  &kp KP_PLUS    &trans
+&kp LSHFT   &kp Z           &kp X         &kp C                     &kp V                      &kp B            &kp RIGHT_ARROW  &trans         &kp KP_NUMBER_1  &kp KP_NUMBER_2  &kp KP_NUMBER_3  &kp KP_ENTER   &trans
+&kp C_MUTE  &kp LCTRL       &kp LEFT_ALT  &kp LEFT_GUI              &lt 1 SPACE                &lt 2 ESCAPE     &kp ENTER        &kp SPACE      &kp ENTER        &kp KP_NUMBER_0  &kp KP_DOT       &kp KP_DOT
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
-            label = "Layer3";
+            display-name = "Media";
         };
 
         Browse {
@@ -104,7 +170,17 @@
 &trans         &trans                    &trans                     &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
             >;
 
-            label = "Layer4";
+            sensor-bindings = <&rol_scrl SCRL_UP SCRL_DOWN>;
+            display-name = "Browse";
+        };
+    };
+
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+
+        SymbolCursor {
+            if-layers = <1 2>;
+            then-layer = <5>;
         };
     };
 };
