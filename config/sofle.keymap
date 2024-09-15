@@ -125,7 +125,7 @@
 &kp GRAVE  &kp F1  &kp F2          &kp F3     &kp F4     &kp F5       &mmv MOVE_UP     &kp F6     &kp F7     &kp F8            &kp F9     &kp F10           &kp RIGHT_BRACKET
 &trans     &trans  &kp HOME        &kp UP     &kp END    &kp PG_UP    &mmv MOVE_DOWN   &kp PG_UP  &kp END    &kp UP            &kp HOME   &kp BACKSLASH     &trans
 &trans     &trans  &kp LEFT        &kp DOWN   &kp RIGHT  &kp PG_DN    &mmv MOVE_LEFT   &kp PG_DN  &kp LEFT   &kp DOWN          &kp RIGHT  &kp SINGLE_QUOTE  &trans
-&trans     &trans  &rgb_ug RGB_ON  &mkp RCLK  &mkp LCLK  &trans       &mmv MOVE_RIGHT  &trans     &mkp LCLK  &mkp RCLK kp F11  &kp F12    &trans            &kp C_MUTE
+&trans     &trans  &rgb_ug RGB_ON  &mkp RCLK  &mkp LCLK  &trans       &mmv MOVE_RIGHT  &trans     &mkp LCLK  &mkp RCLK         &kp F12    &trans            &kp C_MUTE
 &trans     &trans  &trans          &trans     &trans     &trans       &trans           &trans     &trans     &trans            &trans
             >;
 
