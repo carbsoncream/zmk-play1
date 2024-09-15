@@ -59,13 +59,22 @@
         };
     };
 
-    rol_scrl: scroll_encoder {
+    rol_scrl_y: scroll_encoder_y {
         compatible = "zmk,behavior-sensor-rotate";
-        #sensor-binding-cells = <2>;
-        bindings = <&msc>, <&msc>;
+        #sensor-binding-cells = <0>;
+        bindings = <&msc SCRL_UP>, <&msc SCRL_DOWN>;
 
         tap-ms = <30>;
     };
+
+    rol_scrl_x: scroll_encoder_x {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&msc SCRL_LEFT>, <&msc SCRL_LEFT>;
+
+        tap-ms = <30>;
+    };
+
 
 
     char_caps: temp_char_caps {
@@ -103,7 +112,7 @@
 &kp C_MUTE  &kp LCTRL  &kp LEFT_ALT  &bhm LEFT_GUI SPACE  &lt 1 SPACE  &td_sff_ent    &kp ENTER        &lt 2 ENTER  &lt 1 SPACE  &kp RGUI   &kp RIGHT_ALT  &kp DELETE
             >;
 
-            sensor-bindings = <&rol_scrl SCRL_UP SCRL_DOWN>;
+            sensor-bindings = <&rol_scrl_y>;
             display-name = "Words";
         };
 
@@ -116,7 +125,7 @@
 &kp C_MUTE  &trans           &trans           &trans           &trans           &trans       &mkp LCLK        &trans     &trans     &trans             &trans            &trans
             >;
 
-            sensor-bindings = <&rol_scrl SCRL_UP SCRL_DOWN>;
+            sensor-bindings = <&rol_scrl_y>;
             display-name = "Symbols";
         };
 
@@ -129,7 +138,7 @@
 &trans     &trans  &trans          &trans     &trans     &trans       &trans           &trans     &trans     &trans            &trans
             >;
 
-            sensor-bindings = <&rol_scrl SCRL_LEFT SCRL_RIGHT>;
+            sensor-bindings = <&rol_scrl_x>;
             display-name = "Cursor";
         };
 
@@ -142,7 +151,7 @@
 &trans      &trans        &trans        &trans             &trans            &trans          &mkp LCLK        &trans           &trans          &trans      &trans     &trans
             >;
 
-            sensor-bindings = <&rol_scrl SCRL_UP SCRL_DOWN>;
+            sensor-bindings = <&rol_scrl_y>;
             display-name = "Device";
         };
 
@@ -168,7 +177,7 @@
 &trans         &trans                    &trans                     &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
             >;
 
-            sensor-bindings = <&rol_scrl SCRL_UP SCRL_DOWN>;
+            sensor-bindings = <&rol_scrl_y>;
             display-name = "Browse";
         };
     };
