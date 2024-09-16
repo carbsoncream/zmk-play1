@@ -9,14 +9,12 @@
 
 #define ZMK_MOUSE_DEFAULT_MOVE_VAL 1200  // 600
 #define ZMK_MOUSE_DEFAULT_SCRL_VAL 20    // 10
-
 #define WORDS 0
 #define SYMBOLS 1
 #define CURSOR 2
 #define DEVICE 3
 #define MEDIA 4
 #define BROWSE 5
-
 
 / {
     behaviors {
@@ -31,33 +29,45 @@
             time-to-max-speed-ms = <400>;      // 500
             delay-ms = <0>;                   //   10
         };
-        
+
         bhm: balanced_homerow_mods {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
-            tapping-term-ms = <150>;    // <---[[moderate duration]]
+            tapping-term-ms = <200>;    // <---[[moderate duration]]
             quick-tap-ms = <100>;
             flavor = "balanced";
             bindings = <&kp>, <&kp>;
         };
-        
-        
+
+        hhm: hold_preferred_homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;    // <---[[moderate duration]]
+            quick-tap-ms = <100>;
+            flavor = "hold-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+
         esc_grv: escape_grave {
             compatible = "zmk,behavior-mod-morph";    // defaul level
             #binding-cells = <0>;
             bindings = <&kp ESC>, <&kp GRAVE>;
+
             mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
             keep-mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI)>;
         };
-        
+
         bspc_del: backspace_delete {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
             bindings = <&kp BACKSPACE>, <&kp DELETE>;
+
             mods = <(MOD_LSFT|MOD_RSFT)>;
             keep-mods = <(MOD_RSFT)>;
         };
     };
+
+    // rotary control behavior
 
     rol_scrl_y: scroll_encoder_y {
         compatible = "zmk,behavior-sensor-rotate";
@@ -75,7 +85,13 @@
         tap-ms = <30>;
     };
 
+    rol_rgb_br: scroll_encoder_rgb {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&rgb_ug RGB_BRI>, <&rgb_ug RGB_BRD>;
 
+        tap-ms = <30>;
+    };
 
     char_caps: temp_char_caps {
         compatible = "zmk,behavior-caps-word";
@@ -86,30 +102,99 @@
     td_shf: tap_dance_shift {
         compatible = "zmk,behavior-tap-dance";
         #binding-cells = <0>;
-        tapping-term-ms = <150>;
+        tapping-term-ms = <200>;
         bindings = <&kp LSHIFT>, <&char_caps>;
     };
-    
 
-    td_sff_ent: tap_dance_kp {
+    td_sff_ent: tap_dance_left_shift {
         compatible = "zmk,behavior-tap-dance";
         #binding-cells = <0>;
-        tapping-term-ms = <150>;
+        tapping-term-ms = <200>;
         bindings = <&kp LSHIFT>, <&lt 2 ENTER>;
+
+        <&lt 4
+
+        ENTER = >;
     };
+
+    // Right Enter
+
+    lm: layer_modifier {
+        compatible = "zmk,behavior-macro-two-param";
+        wait-ms = <0>;
+        tap-ms = <0>;
+        #binding-cells = <2>;
+        bindings =
+            <&macro_param_1to1>,
+            <&macro_press>,
+            <&mo MACRO_PLACEHOLDER &macro_param_2to1>,
+            <&macro_press>,
+            <&kp MACRO_PLACEHOLDER>,
+            <&macro_pause_for_release>,
+            <&macro_param_2to1>,
+            <&macro_release>,
+            <&kp MACRO_PLACEHOLDER &macro_param_1to1>,
+            <&macro_release>,
+            <&mo MACRO_PLACEHOLDER>;
+    };
+
+    zl: z-layer {
+        compatible = "zmk,behavior-hold-tap";
+        label = "Z-LAYERMOD";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <300>;
+        quick-tap-ms = <125>;
+        global-quick-tap;
+        bindings = <&kp Z>, <&lm 2 LALT>;
+    };
+
+    td_lm_ent: tap_dance_right_enter {
+        compatible = "zmk,behavior-tap-dance";
+        #binding-cells = <0>;
+        tapping-term-ms = <200>;
+        bindings = <&lt 2 ENTER>, <&lm 2 LSHIFT>, <&lm 2 LEFT_ALT>;
+    };
+
+    macros {
+    };
+
+    combos {
+        compatible = "zmk,combos";
     
-    
+        SingleQuote {
+            bindings = <&kp SINGLE_QUOTE>;
+            key-positions = <35 36>;
+            layers = <0 1>;
+        };
+        
+        DoubleQuote {
+            bindings = <&kp DOUBLE_QUOTES>;
+            key-positions = <37 36>;
+            layers = <0 1>;
+        };
+
+        LeftBackspace {
+            bindings = <&kp BACKSPACE>;
+            key-positions = <0 1>;
+        };
+
+        LeftDel {
+            bindings = <&kp DELETE>;
+            key-positions = <1 2>;
+        };
+    };
 
     keymap {
         compatible = "zmk,keymap";
 
         Default {
             bindings = <
-&esc_grv    &kp N1     &kp N2        &kp N3               &kp N4       &kp N5         &kp UP_ARROW     &kp N6       &kp N7       &kp N8     &kp N9         &kp N0      &bspc_del
-&lt 3 TAB   &kp Q      &kp W         &kp E                &kp R        &kp T          &kp DOWN_ARROW   &kp Y        &kp U        &kp I      &kp O          &kp P       &kp LEFT_BRACKET
-&lt 4 CAPS  &kp A      &kp S         &kp D                &kp F        &kp G          &kp LEFT_ARROW   &kp H        &kp J        &kp K      &kp L          &kp SEMI    &kp RETURN
-&td_shf     &kp Z      &kp X         &kp C                &kp V        &kp B          &kp RIGHT_ARROW  &kp N        &kp M        &kp COMMA  &kp DOT        &kp FSLH    &kp MINUS
-&kp C_MUTE  &kp LCTRL  &kp LEFT_ALT  &bhm LEFT_GUI SPACE  &lt 1 SPACE  &td_sff_ent    &kp ENTER        &lt 2 ENTER  &lt 1 SPACE  &kp RGUI   &kp RIGHT_ALT  &kp DELETE
+&esc_grv    &kp N1     &kp N2        &kp N3               &kp N4       &kp N5         &kp UP_ARROW     &kp N6      &kp N7       &kp N8            &kp N9         &kp N0      &bspc_del
+&lt 3 TAB   &kp Q      &kp W         &kp E                &kp R        &kp T          &kp DOWN_ARROW   &kp Y       &kp U        &kp I             &kp O          &kp P       &kp LEFT_BRACKET
+&lt 4 CAPS  &kp A      &kp S         &kp D                &kp F        &kp G          &kp LEFT_ARROW   &kp H       &kp J        &kp K             &kp L          &kp SEMI    &kp SINGLE_QUOTE
+&td_shf     &kp Z      &kp X         &kp C                &kp V        &kp B          &kp RIGHT_ARROW  &kp N       &kp M        &kp COMMA         &kp DOT        &kp FSLH    &mt RIGHT_SHIFT MINUS
+&kp C_MUTE  &kp LCTRL  &kp LEFT_ALT  &hhm LEFT_GUI SPACE  &lt 1 SPACE  &td_sff_ent    &kp ENTER        &td_lm_ent  &lt 1 SPACE  &hhm RGUI SPACE   &kp RIGHT_ALT  &kp DELETE
             >;
 
             sensor-bindings = <&rol_scrl_y>;
@@ -118,24 +203,24 @@
 
         Symbols {
             bindings = <
-&kp GRAVE   &kp F1           &kp F2           &kp F3           &kp F4           &kp F5       &mmv MOVE_UP     &kp F6     &kp F7     &kp F8             &kp F9            &kp F10            &trans
-&trans      &rgb_ug RGB_HUI  &rgb_ug RGB_SAI  &rgb_ug RGB_SPI  &rgb_ug RGB_BRI  &mkp LCLK    &mmv MOVE_DOWN   &kp MINUS  &kp EQUAL  &kp SINGLE_QUOTE   &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH
-&trans      &rgb_ug RGB_HUD  &rgb_ug RGB_SAD  &rgb_ug RGB_SPD  &rgb_ug RGB_BRD  &mkp RCLK    &mmv MOVE_LEFT   &kp UNDER  &kp PLUS   &kp DOUBLE_QUOTES  &kp LEFT_BRACE    &kp RIGHT_BRACE    &none
-&trans      &rgb_ug RGB_OFF  &rgb_ug RGB_ON   &rgb_ug RGB_EFR  &rgb_ug RGB_EFF  &trans       &mmv MOVE_RIGHT  &kp GRAVE  &kp TILDE  &kp INSERT         &kp F11           &kp F12            &kp EQUAL
-&kp C_MUTE  &trans           &trans           &trans           &trans           &trans       &mkp LCLK        &trans     &trans     &trans             &trans            &trans
+&kp GRAVE   &kp F1           &kp F2             &kp F3            &kp F4                      &kp F5                       &mmv MOVE_UP     &kp F6                      &kp F7                      &kp F8             &kp F9            &kp F10            &trans
+&kp MINUS   &kp EQUAL        &kp SINGLE_QUOTE   &kp LEFT_BRACKET  &kp RIGHT_BRACKET           &kp BACKSLASH                &mmv MOVE_DOWN   &kp MINUS                   &kp EQUAL                   &kp SINGLE_QUOTE   &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH
+&kp UNDER   &kp PLUS         &kp DOUBLE_QUOTES  &kp LEFT_BRACE    &kp RIGHT_BRACE             &kp PIPE                     &mmv MOVE_LEFT   &kp UNDER                   &kp PLUS                    &kp DOUBLE_QUOTES  &kp LEFT_BRACE    &kp RIGHT_BRACE    &kp PIPE
+&trans      &trans           &trans             &trans            &kp LS(LG(LEFT_BRACKET))    &kp LS(LG(RIGHT_BRACKET))    &mmv MOVE_RIGHT  &kp LS(LG(LEFT_BRACKET))    &kp LS(LG(RIGHT_BRACKET))   &kp GRAVE          &kp TILDE         &kp F11            &kp F12
+&kp C_MUTE  &trans           &trans             &trans            &trans                      &trans                       &mkp LCLK        &trans                      &trans                      &trans             &trans            &trans
             >;
 
-            sensor-bindings = <&rol_scrl_y>;
+            sensor-bindings = <&rol_scrl_x>;
             display-name = "Symbols";
         };
 
         Cursor {
             bindings = <
-&kp GRAVE  &kp F1  &kp F2          &kp F3     &kp F4     &kp F5       &mmv MOVE_UP     &kp F6     &kp F7     &kp F8            &kp F9     &kp F10           &kp RIGHT_BRACKET
-&trans     &trans  &kp HOME        &kp UP     &kp END    &kp PG_UP    &mmv MOVE_DOWN   &kp PG_UP  &kp END    &kp UP            &kp HOME   &kp BACKSLASH     &trans
-&trans     &trans  &kp LEFT        &kp DOWN   &kp RIGHT  &kp PG_DN    &mmv MOVE_LEFT   &kp PG_DN  &kp LEFT   &kp DOWN          &kp RIGHT  &kp SINGLE_QUOTE  &trans
-&trans     &trans  &rgb_ug RGB_ON  &mkp RCLK  &mkp LCLK  &trans       &mmv MOVE_RIGHT  &trans     &mkp LCLK  &mkp RCLK         &kp F12    &trans            &kp C_MUTE
-&trans     &trans  &trans          &trans     &trans     &trans       &trans           &trans     &trans     &trans            &trans
+&trans         &kp F1     &kp F2     &kp F3     &kp F4     &kp F5       &mmv MOVE_UP     &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    &trans
+&sk RIGHT_ALT  &trans     &kp HOME   &kp UP     &kp END    &kp PG_UP    &mmv MOVE_DOWN   &kp PG_UP  &kp HOME   &kp UP     &kp END    &kp INSERT &sk RIGHT_ALT
+&sk RGUI       &trans     &kp LEFT   &kp DOWN   &kp RIGHT  &kp PG_DN    &mmv MOVE_LEFT   &kp PG_DN  &kp LEFT   &kp DOWN   &kp RIGHT  &trans     &sk RGUI
+&sk RSHIFT     &sk RCTRL  &trans     &mkp MCLK  &mkp RCLK  &mkp LCLK    &mmv MOVE_RIGHT  &mkp LCLK  &mkp RCLK  &mkp MCLK  &trans     &sk RCTRL  &sk RSHIFT
+&trans         &trans     &trans     &trans     &trans     &trans       &trans           &trans     &trans     &trans     &trans     &trans
             >;
 
             sensor-bindings = <&rol_scrl_x>;
@@ -144,14 +229,14 @@
 
         Device {
             bindings = <
-&bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2       &bt BT_SEL 3      &bt BT_SEL 4    &mmv MOVE_UP     &kp F6           &kp F7          &kp F8      &kp F9     &kp F10      &trans
-&trans      &trans        &trans        &trans             &trans            &trans          &mmv MOVE_DOWN   &kp PAGE_UP      &trans          &kp F11     &kp F12    &kp UNDER    &kp PLUS
-&trans      &out OUT_USB  &out OUT_BLE  &ext_power EP_OFF  &ext_power EP_ON  &trans          &mmv MOVE_LEFT   &trans           &trans          &trans      &trans     &kp LBRC     &kp RBRC
-&trans      &sys_reset    &soft_off     &bootloader        &trans            &trans          &mmv MOVE_RIGHT  &rgb_ug RGB_OFF  &rgb_ug RGB_ON  &sys_reset  &soft_off  &bootloader  &trans
-&trans      &trans        &trans        &trans             &trans            &trans          &mkp LCLK        &trans           &trans          &trans      &trans     &trans
+&bt BT_CLR  &bt BT_SEL 0     &bt BT_SEL 1     &bt BT_SEL 2       &bt BT_SEL 3      &bt BT_SEL 4       &mmv MOVE_UP     &kp F6  &kp F7  &kp F8      &kp F9     &kp F10      &trans
+&trans      &out OUT_USB     &out OUT_BLE     &ext_power EP_OFF  &ext_power EP_ON  &trans             &mmv MOVE_DOWN   &trans  &trans  &kp F11     &kp F12    &trans       &trans
+&trans      &rgb_ug RGB_HUI  &rgb_ug RGB_SAI  &rgb_ug RGB_SPI    &rgb_ug RGB_EFF   &rgb_ug RGB_ON     &mmv MOVE_LEFT   &trans  &trans  &trans      &trans     &trans       &trans
+&trans      &rgb_ug RGB_HUD  &rgb_ug RGB_SAD  &rgb_ug RGB_SPD    &rgb_ug RGB_EFR   &rgb_ug RGB_OFF    &mmv MOVE_RIGHT  &trans  &trans  &sys_reset  &soft_off  &bootloader  &trans
+&sys_reset  &bootloader      &soft_off        &trans             &trans            &trans             &mkp LCLK        &trans  &trans  &trans      &trans     &trans
             >;
 
-            sensor-bindings = <&rol_scrl_y>;
+            sensor-bindings = <&rol_rgb_br>;
             display-name = "Device";
         };
 
