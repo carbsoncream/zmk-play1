@@ -134,16 +134,15 @@
             <&mo MACRO_PLACEHOLDER>;
     };
 
-    zl: z-layer {
-        compatible = "zmk,behavior-hold-tap";
-        label = "Z-LAYERMOD";
-        #binding-cells = <2>;
-        flavor = "tap-preferred";
-        tapping-term-ms = <300>;
-        quick-tap-ms = <125>;
-        global-quick-tap;
-        bindings = <&kp Z>, <&lm 2 LALT>;
-    };
+    // zl: z-layer {
+    //     compatible = "zmk,behavior-hold-tap";
+    //     #binding-cells = <2>;
+    //     flavor = "tap-preferred";
+    //     tapping-term-ms = <300>;
+    //     quick-tap-ms = <125>;
+    //     global-quick-tap;
+    //     bindings = <&kp Z>, <&lm 2 LALT>;
+    // };
 
     td_lm_ent: tap_dance_right_enter {
         compatible = "zmk,behavior-tap-dance";
