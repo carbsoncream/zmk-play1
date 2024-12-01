@@ -133,7 +133,7 @@ ZMK_HOLD_TAP(ht_hold,
 
 ZMK_TAP_DANCE(cap_dance, 
     tapping-term-ms = <TAP_DANCE_MS>; 
-    bindings = <&ht_hold LCTRL CAPS>, <&mo NUM> 
+    bindings = <&ht_hold LCTRL CAPS>, <&mo NUM> ;
     )
 
 // ##############################
