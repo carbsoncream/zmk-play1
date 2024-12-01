@@ -40,8 +40,6 @@
 
 #include "sofle.h"
 
-/*
-
 #define KEYS_L LN0 LN1 LN2 LN3 LN4 LN5 \
                LT0 LT1 LT2 LT3 LT4 LT5 \
                LM0 LM1 LM2 LM3 LM4 LM5 \
@@ -59,7 +57,7 @@
 #define ENC_R REC REU RED REL RER
 #define ENC_L LEC
 
-*/
+
 /*
 
 
