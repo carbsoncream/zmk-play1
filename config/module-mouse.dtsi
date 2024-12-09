@@ -1,0 +1,54 @@
+
+/*
+
+Pre-requisit:
+- `#include <behaviors/mouse_keys.dtsi>`
+
+Remarks: see more at ....
+*/
+
+
+// ########################################
+
+// ####################
+// ---- Global settings
+// ####################
+
+#define ZMK_MOUSE_DEFAULT_MOVE_VAL 1200  // 600
+#define ZMK_MOUSE_DEFAULT_SCRL_VAL 30    // 10
+
+// Mouse `time-to-max-speed-ms` (deaful: 40)
+#define MOUSE_MAX_SPEED_MS_FAST  20
+#define MOUSE_MAX_SPEED_MS_NORM 300
+#define MOUSE_MAX_SPEED_MS_SLOW 500
+
+// Wheel `time-to-max-speed-ms` (deaful: 500)
+#define WHEEL_MAX_SPEED_MS_FAST  20
+#define WHEEL_MAX_SPEED_MS_MODER 40
+#define WHEEL_MAX_SPEED_MS_NORM 200
+
+/ {
+    behaviors {
+        mmv {
+            acceleration-exponent = <1>; // 1
+            time-to-max-speed-ms = <MOUSE_MAX_SPEED_MS_SLOW>;    // 40
+            delay-ms = <0>;                   // 0
+        };
+
+        msc {
+            acceleration-exponent = <0>;      // 0
+            time-to-max-speed-ms = <WHEEL_MAX_SPEED_MS_MODER>;      // 500
+            delay-ms = <0>;                   //   10
+        };
+    };
+};
+
+#define MOUSE_UP &mmv MOVE_UP
+#define MOUSE_DOWN &mmv MOVE_DOWN
+#define MOUSE_LEFT &mmv MOVE_LEFT
+#define MOUSE_RIGHT &mmv MOVE_RIGHT
+
+#define WHEEL_UP &msc SCRL_UP
+#define WHEEL_DOWN &msc SCRL_DOWN
+#define WHEEL_LEFT &msc SCRL_LEFT
+#define WHEEL_RIGHT &msc SCRL_RIGHT
